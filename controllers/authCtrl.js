@@ -91,6 +91,7 @@ const authCtrl = {
     generateAccessToken: async (req, res) => {
         try {
             console.log(req.cookies, "cookie");
+            console.log(req.cookies.refreshtoken, "cookie refres");
             console.log(req.cookies, "cookie");
             const rf_token = req.cookies.refreshtoken
             if(!rf_token) return res.status(400).json({msg: "Please login now."})
