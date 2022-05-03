@@ -40,6 +40,10 @@ app.use('/api', require('./routes/commentRouter'))
 app.use('/api', require('./routes/notifyRouter'))
 app.use('/api', require('./routes/messageRouter'))
 
+app.get("/", (res, res)=>{
+    res.send('hello world')
+})
+
 
 const URI = process.env.MONGODB_URL
 mongoose.connect(URI, {
