@@ -90,9 +90,6 @@ const authCtrl = {
     },
     generateAccessToken: async (req, res) => {
         try {
-            console.log(req.cookies, "cookie");
-            console.log(req.cookies.refreshtoken, "cookie refres");
-            console.log(req.cookies, "cookie");
             const rf_token = req.cookies.refreshtoken
             if(!rf_token) return res.status(400).json({msg: "Please login now."})
 
@@ -113,6 +110,33 @@ const authCtrl = {
             })
             
         } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
+
+    me: async(req, res) =>{
+
+        const {token}  = req.body;
+        // console.log(token, 'token')
+        if(!token) return res.status(400).json({msg: "Please login now and then."})
+
+        try{
+            jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async(err, result) => {
+                if(err) return res.status(400).json({msg: "Please login now com.", err})
+
+                const user = await Users.findById(result.id).select("-password")
+                .populate('followers following', 'avatar username fullname followers following')
+
+                if(!user) return res.status(400).json({msg: "This does not exist.", err})
+
+                const access_token = createAccessToken({id: result.id})
+
+                res.json({
+                    access_token,
+                    user
+                })
+            })
+        }catch(err){
             return res.status(500).json({msg: err.message})
         }
     }
